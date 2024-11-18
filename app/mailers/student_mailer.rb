@@ -5,11 +5,14 @@ class StudentMailer < SchoolMailer
     @student = student
     @user = student.user
     @user.regenerate_login_token
-    @user.update!(login_mail_sent_at: Time.zone.now)
 
-    simple_roadie_mail(
+    simple_mail(
       @student.email,
-      "You have been added as a student in #{@school.name}"
+      I18n.t(
+        "mailers.student.enrollment.subject",
+        name: @student.name,
+        school_name: @school.name
+      )
     )
   end
 end

@@ -1,38 +1,9 @@
-<%
-  sign_in_link = user_token_url(token: @user.original_login_token)
-%>
-
-<% content_for :title do %>
-  <%= @course.name %>
-<% end %>
-
-<% content_for :subtitle do %>
-  You have been added as a coach on <%= @school.name %>.
-<% end %>
-
-<% content_for :title_button_text do %>
-  Sign in to Review Course
-<% end %>
-
-<% content_for(:title_button_link, sign_in_link) %>
-
 <% content_for :salutation do %>
-  Hello <%= @coach.name %>,
+  <%= t("shared.salutation_name", name: @coach.name) %>
 <% end %>
 
 <% content_for :body do %>
   <p>
-    You have been added as a coach in the course <strong><%= @course.name %></strong>, on <%= @school.name %>. This
-    gives you the ability to review submissions from students, assign grades, and give them feedback on their work.
-  </p>
-
-  <p>
-    Use the link above to sign into <%= @school.name %> and view your students' submissions.
-  </p>
-
-  <%= render 'mailers/link_fallback', url: sign_in_link %>
-
-  <p>
-    Please note that the link will expire by <%= @user.login_token_expiration_time %>. If the link has expired, you can request another one-time token from <a href=<%= sign_in_with_email_url %>>the sign-in page</a>.
+    <%= t("mailers.course_enrollement.added_coach_html", course_name: @course.name, school_name: @school.name) %>
   </p>
 <% end %>

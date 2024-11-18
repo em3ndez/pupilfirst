@@ -9,8 +9,12 @@ module Courses
       "#{@course.name} | #{current_school.name}"
     end
 
+    def markdown_prop(markdown)
+      { markdown: markdown, profile: 'permissive' }.to_json
+    end
+
     def about
-      MarkdownIt::Parser.new(:commonmark).render(@course.about) if show_about?
+      @course.about if show_about?
     end
 
     def cover_image
@@ -24,7 +28,7 @@ module Courses
     def user_is_student?
       return false if current_user.blank?
 
-      current_user.founders.joins(:course).exists?(courses: { id: @course.id })
+      current_user.students.joins(:course).exists?(courses: { id: @course.id })
     end
   end
 end

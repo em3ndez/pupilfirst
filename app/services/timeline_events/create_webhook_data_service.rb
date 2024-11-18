@@ -7,10 +7,12 @@ module TimelineEvents
     def data
       {
         id: @submission.id,
+        students: @submission.students.pluck(:id),
         created_at: @submission.created_at,
         updated_at: @submission.updated_at,
         target_id: @submission.target_id,
         checklist: @submission.checklist,
+        level_number: target.level.number,
         target: {
           id: target.id,
           title: target.title,
@@ -20,10 +22,14 @@ module TimelineEvents
       }.merge(evaluation)
     end
 
-    private
+    def students
+      @submission.students.map do |student|
+        { id: student.id, name: student.name }
+      end
+    end
 
     def evaluation
-      return {} if @submission.pending_review?
+      return {} if evaluation_criteria.empty? || @submission.pending_review?
 
       {
         evaluator: @submission.evaluator.name,
@@ -40,18 +46,19 @@ module TimelineEvents
     end
 
     def target
-      @target ||= @submission.target
+      @submission.target
     end
 
     def evaluation_criteria
-      @submission.evaluation_criteria.map do |ec|
-        {
-          name: ec.name,
-          max_grade: ec.max_grade,
-          pass_grade: ec.pass_grade,
-          grade_labels: ec.grade_labels
-        }
-      end
+      @evaluation_criteria ||=
+        @submission.evaluation_criteria.map do |ec|
+          {
+            id: ec.id,
+            name: ec.name,
+            max_grade: ec.max_grade,
+            grade_labels: ec.grade_labels
+          }
+        end
     end
 
     def files

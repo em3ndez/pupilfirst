@@ -41,7 +41,7 @@ feature 'Course authors editor', js: true do
     open_email(new_author_user.email)
 
     expect(current_email.subject).to include("You have been added as an author in #{course.name}")
-    expect(current_email.body).to have_link("Sign in to Edit Course")
+    expect(current_email.body).to have_link("link")
 
     # The new author should be immediately editable.
     click_link(new_author_user.name)
@@ -85,7 +85,7 @@ feature 'Course authors editor', js: true do
     sign_in_user school_admin.user, referrer: authors_school_course_path(course)
 
     accept_confirm do
-      find("div[title='Delete #{course_author.user.name}'").click
+      find("button[title='Delete #{course_author.user.name}'").click
     end
 
     expect(page).not_to have_text(course_author.user.name)
